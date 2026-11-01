@@ -1,0 +1,295 @@
+{
+  "organizations": [
+    {
+      "id": "org-clientpulse-demo",
+      "name": "Apex Digital Solutions",
+      "slug": "apex-digital",
+      "currency": "USD",
+      "createdAt": "2026-11-01T05:45:19.120Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "usr-admin-01",
+      "email": "admin@clientpulse.local",
+      "passwordHash": "$2b$10$lQd00vUbNSmYOWnPZMCjUuOq3dZ5VzVgUrjPomrAL/yVW4MRjH/Hq",
+      "firstName": "Sarah",
+      "lastName": "Jenkins",
+      "role": "business_admin",
+      "organizationId": "org-clientpulse-demo",
+      "isActive": true,
+      "createdAt": "2026-11-01T05:45:19.121Z"
+    },
+    {
+      "id": "usr-super-01",
+      "email": "superadmin@clientpulse.io",
+      "passwordHash": "$2b$10$lQd00vUbNSmYOWnPZMCjUuOq3dZ5VzVgUrjPomrAL/yVW4MRjH/Hq",
+      "firstName": "Devin",
+      "lastName": "Vance",
+      "role": "super_admin",
+      "organizationId": "org-clientpulse-demo",
+      "isActive": true,
+      "createdAt": "2026-11-01T05:45:19.121Z"
+    },
+    {
+      "id": "usr-employee-01",
+      "email": "alex.lead@clientpulse.local",
+      "passwordHash": "$2b$10$lQd00vUbNSmYOWnPZMCjUuOq3dZ5VzVgUrjPomrAL/yVW4MRjH/Hq",
+      "firstName": "Alex",
+      "lastName": "Vance",
+      "role": "employee",
+      "organizationId": "org-clientpulse-demo",
+      "isActive": true,
+      "createdAt": "2026-11-01T05:45:19.121Z"
+    },
+    {
+      "id": "usr-client-01",
+      "email": "marcus@novatech.io",
+      "passwordHash": "$2b$10$lQd00vUbNSmYOWnPZMCjUuOq3dZ5VzVgUrjPomrAL/yVW4MRjH/Hq",
+      "firstName": "Marcus",
+      "lastName": "Sterling",
+      "role": "client",
+      "organizationId": "org-clientpulse-demo",
+      "isActive": true,
+      "createdAt": "2026-11-01T05:45:19.121Z"
+    }
+  ],
+  "clients": [
+    {
+      "id": "cli-1793512058661",
+      "organizationId": "org-clientpulse-demo",
+      "companyName": "Apex Quantum Dynamics",
+      "primaryContactName": "Dr. Aris Thorne",
+      "primaryEmail": "aris@apexquantum.io",
+      "phone": "+1 (555) 777-8899",
+      "status": "active",
+      "healthScore": 100,
+      "totalRevenue": 0,
+      "createdAt": "2026-11-01"
+    },
+    {
+      "id": "cli-001",
+      "organizationId": "org-clientpulse-demo",
+      "companyName": "NovaTech Enterprises",
+      "primaryContactName": "Marcus Sterling",
+      "primaryEmail": "marcus@novatech.io",
+      "phone": "+1 (555) 349-2810",
+      "status": "active",
+      "healthScore": 92,
+      "totalRevenue": 34500,
+      "createdAt": "2026-08-15"
+    },
+    {
+      "id": "cli-002",
+      "organizationId": "org-clientpulse-demo",
+      "companyName": "Lumina Health Labs",
+      "primaryContactName": "Elena Rostova",
+      "primaryEmail": "elena@luminahealth.com",
+      "phone": "+1 (555) 782-9901",
+      "status": "active",
+      "healthScore": 74,
+      "totalRevenue": 18200,
+      "createdAt": "2026-09-01"
+    },
+    {
+      "id": "cli-003",
+      "organizationId": "org-clientpulse-demo",
+      "companyName": "Vanguard Retail Logistics",
+      "primaryContactName": "Dave Kowalski",
+      "primaryEmail": "dave@vanguardlog.com",
+      "phone": "+1 (555) 912-4411",
+      "status": "active",
+      "healthScore": 48,
+      "totalRevenue": 9500,
+      "createdAt": "2026-07-20"
+    }
+  ],
+  "enquiries": [
+    {
+      "id": "enq-001",
+      "organizationId": "org-clientpulse-demo",
+      "title": "Full Stack React & Node Web App Redesign",
+      "description": "Looking to modernize our legacy customer portal with responsive Tailwind CSS UI and secure customer self-service billing.",
+      "source": "website",
+      "budgetRange": "$10,000 - $15,000",
+      "status": "qualified",
+      "aiSummary": "High intent prospect requiring enterprise portal overhaul with authentication and payments integration.",
+      "aiIntentScore": 0.92,
+      "createdAt": "2026-11-01T05:45:19.121Z"
+    },
+    {
+      "id": "enq-002",
+      "organizationId": "org-clientpulse-demo",
+      "title": "AI Automation Workflow for Client Onboarding",
+      "description": "We need automated document processing and client sentiment analysis embedded into our daily agency workflow.",
+      "source": "referral",
+      "budgetRange": "$5,000 - $8,000",
+      "status": "new",
+      "aiSummary": "Urgent enquiry seeking LLM agent pipeline and business process automation.",
+      "aiIntentScore": 0.88,
+      "createdAt": "2026-11-01T05:45:19.121Z"
+    }
+  ],
+  "quotations": [
+    {
+      "id": "qt-101",
+      "organizationId": "org-clientpulse-demo",
+      "clientId": "cli-001",
+      "clientName": "NovaTech Enterprises",
+      "quotationNumber": "QT-2026-001",
+      "title": "SaaS Platform Modernization & API Integration",
+      "subtotal": 12500,
+      "discountPercent": 5,
+      "taxPercent": 0,
+      "totalAmount": 11875,
+      "status": "accepted",
+      "validUntil": "2026-12-15",
+      "items": [
+        {
+          "description": "Architecture & UX Wireframes",
+          "quantity": 1,
+          "unitPrice": 2500,
+          "totalPrice": 2500
+        },
+        {
+          "description": "Core Application Engineering",
+          "quantity": 1,
+          "unitPrice": 7500,
+          "totalPrice": 7500
+        },
+        {
+          "description": "Automated E2E Test Suite & Deployment",
+          "quantity": 1,
+          "unitPrice": 2500,
+          "totalPrice": 2500
+        }
+      ],
+      "createdAt": "2026-10-10"
+    }
+  ],
+  "projects": [
+    {
+      "id": "prj-001",
+      "organizationId": "org-clientpulse-demo",
+      "clientId": "cli-001",
+      "clientName": "NovaTech Enterprises",
+      "name": "NovaTech SaaS Modernization",
+      "description": "Production migration to React TypeScript with client portal and workflow automation.",
+      "status": "in_progress",
+      "budget": 11875,
+      "startDate": "2026-10-15",
+      "targetEndDate": "2026-12-20",
+      "milestones": [
+        {
+          "id": "m-1",
+          "title": "System Architecture & Database Schema",
+          "dueDate": "2026-10-30",
+          "status": "approved_by_client"
+        },
+        {
+          "id": "m-2",
+          "title": "API Integration & Authentication",
+          "dueDate": "2026-11-20",
+          "status": "in_progress"
+        },
+        {
+          "id": "m-3",
+          "title": "User Acceptance Testing & Go-Live",
+          "dueDate": "2026-12-18",
+          "status": "pending"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "t-1",
+          "title": "Configure PostgreSQL tables & RLS",
+          "priority": "high",
+          "status": "done",
+          "assignedToName": "Sarah Jenkins"
+        },
+        {
+          "id": "t-2",
+          "title": "Build Client Portal responsive dashboard",
+          "priority": "urgent",
+          "status": "in_progress",
+          "assignedToName": "Alex Vance"
+        },
+        {
+          "id": "t-3",
+          "title": "Implement Postman API automated tests",
+          "priority": "medium",
+          "status": "todo",
+          "assignedToName": "Alex Vance"
+        }
+      ]
+    }
+  ],
+  "invoices": [
+    {
+      "id": "inv-101",
+      "organizationId": "org-clientpulse-demo",
+      "clientId": "cli-001",
+      "clientName": "NovaTech Enterprises",
+      "projectId": "prj-001",
+      "invoiceNumber": "INV-2026-001",
+      "issueDate": "2026-10-15",
+      "dueDate": "2026-10-30",
+      "totalAmount": 5937.5,
+      "balanceDue": 0,
+      "status": "paid",
+      "items": [
+        {
+          "description": "Initial 50% Project Kickoff Deposit",
+          "quantity": 1,
+          "unitPrice": 5937.5,
+          "totalPrice": 5937.5
+        }
+      ]
+    },
+    {
+      "id": "inv-102",
+      "organizationId": "org-clientpulse-demo",
+      "clientId": "cli-003",
+      "clientName": "Vanguard Retail Logistics",
+      "invoiceNumber": "INV-2026-002",
+      "issueDate": "2026-09-15",
+      "dueDate": "2026-09-30",
+      "totalAmount": 3200,
+      "balanceDue": 3200,
+      "status": "overdue",
+      "items": [
+        {
+          "description": "Custom Analytics Module Delivery",
+          "quantity": 1,
+          "unitPrice": 3200,
+          "totalPrice": 3200
+        }
+      ]
+    }
+  ],
+  "feedback": [
+    {
+      "id": "fb-001",
+      "organizationId": "org-clientpulse-demo",
+      "clientId": "cli-001",
+      "clientName": "NovaTech Enterprises",
+      "rating": 5,
+      "comment": "Super fast delivery and clean, intuitive communication. The AI quotation tool saved us days.",
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.96,
+      "createdAt": "2026-10-28"
+    },
+    {
+      "id": "fb-002",
+      "organizationId": "org-clientpulse-demo",
+      "clientId": "cli-003",
+      "clientName": "Vanguard Retail Logistics",
+      "rating": 2,
+      "comment": "Delay in milestone 2 review caused our team confusion.",
+      "sentimentLabel": "negative",
+      "sentimentScore": -0.65,
+      "createdAt": "2026-10-25"
+    }
+  ],
+  "lastSaved": "2026-11-01T05:47:38.661Z"
+}
