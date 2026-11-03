@@ -1,0 +1,297 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model audit_logs {
+  id              BigInt         @id @default(autoincrement())
+  organization_id String?        @db.Uuid
+  user_id         String?        @db.Uuid
+  action          String         @db.VarChar(100)
+  entity_type     String         @db.VarChar(50)
+  entity_id       String?        @db.Uuid
+  ip_address      String?        @db.VarChar(45)
+  metadata        Json?          @default("{}")
+  created_at      DateTime?      @default(now()) @db.Timestamptz(6)
+  organizations   organizations? @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user_profiles   user_profiles? @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model client_feedback {
+  id                       String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organization_id          String        @db.Uuid
+  client_id                String        @db.Uuid
+  project_id               String?       @db.Uuid
+  rating                   Int?
+  comment                  String?
+  sentiment_label          String?       @db.VarChar(20)
+  sentiment_score          Decimal?      @db.Decimal(3, 2)
+  ai_action_recommendation String?
+  created_at               DateTime?     @default(now()) @db.Timestamptz(6)
+  clients                  clients       @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  organizations            organizations @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  projects                 projects?     @relation(fields: [project_id], references: [id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model client_pulse_logs {
+  id                      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  client_id               String    @db.Uuid
+  calculated_score        Int
+  risk_status             String?   @db.VarChar(20)
+  payment_factor          Decimal?  @db.Decimal(5, 2)
+  feedback_factor         Decimal?  @db.Decimal(5, 2)
+  project_activity_factor Decimal?  @db.Decimal(5, 2)
+  breakdown_notes         Json?
+  recorded_at             DateTime? @default(now()) @db.Timestamptz(6)
+  clients                 clients   @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([client_id], map: "idx_pulse_client")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model clients {
+  id                   String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organization_id      String              @db.Uuid
+  portal_user_id       String?             @db.Uuid
+  company_name         String              @db.VarChar(150)
+  primary_contact_name String              @db.VarChar(100)
+  primary_email        String              @db.VarChar(255)
+  phone                String?             @db.VarChar(30)
+  billing_address      Json                @default("{}")
+  status               String?             @default("active") @db.VarChar(30)
+  health_score         Int?                @default(100)
+  created_at           DateTime?           @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?           @default(now()) @db.Timestamptz(6)
+  client_feedback      client_feedback[]
+  client_pulse_logs    client_pulse_logs[]
+  organizations        organizations       @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user_profiles        user_profiles?      @relation(fields: [portal_user_id], references: [id], onUpdate: NoAction)
+  enquiries            enquiries[]
+  invoices             invoices[]
+  projects             projects[]
+  quotations           quotations[]
+
+  @@index([health_score], map: "idx_clients_health")
+  @@index([organization_id], map: "idx_clients_org")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model enquiries {
+  id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organization_id String         @db.Uuid
+  client_id       String?        @db.Uuid
+  source          String?        @default("website") @db.VarChar(50)
+  title           String         @db.VarChar(200)
+  description     String
+  budget_range    String?        @db.VarChar(50)
+  status          String?        @default("new") @db.VarChar(30)
+  ai_summary      String?
+  ai_intent_score Decimal?       @db.Decimal(3, 2)
+  assigned_to     String?        @db.Uuid
+  created_at      DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime?      @default(now()) @db.Timestamptz(6)
+  user_profiles   user_profiles? @relation(fields: [assigned_to], references: [id], onUpdate: NoAction)
+  clients         clients?       @relation(fields: [client_id], references: [id], onUpdate: NoAction)
+  organizations   organizations  @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  quotations      quotations[]
+
+  @@index([organization_id], map: "idx_enquiries_org")
+  @@index([status], map: "idx_enquiries_status")
+}
+
+model invoice_items {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  invoice_id  String   @db.Uuid
+  description String
+  quantity    Decimal  @default(1) @db.Decimal(8, 2)
+  unit_price  Decimal  @db.Decimal(12, 2)
+  total_price Decimal  @db.Decimal(12, 2)
+  invoices    invoices @relation(fields: [invoice_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model invoices {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organization_id String          @db.Uuid
+  client_id       String          @db.Uuid
+  project_id      String?         @db.Uuid
+  invoice_number  String          @db.VarChar(50)
+  issue_date      DateTime        @default(dbgenerated("CURRENT_DATE")) @db.Date
+  due_date        DateTime        @db.Date
+  subtotal        Decimal         @db.Decimal(12, 2)
+  tax_amount      Decimal?        @default(0.00) @db.Decimal(12, 2)
+  discount_amount Decimal?        @default(0.00) @db.Decimal(12, 2)
+  total_amount    Decimal         @db.Decimal(12, 2)
+  balance_due     Decimal         @db.Decimal(12, 2)
+  status          String?         @default("draft") @db.VarChar(30)
+  pdf_path        String?
+  created_at      DateTime?       @default(now()) @db.Timestamptz(6)
+  invoice_items   invoice_items[]
+  clients         clients         @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  organizations   organizations   @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  projects        projects?       @relation(fields: [project_id], references: [id], onUpdate: NoAction)
+  payments        payments[]
+
+  @@index([organization_id], map: "idx_invoices_org")
+  @@index([status], map: "idx_invoices_status")
+}
+
+model organizations {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String            @db.VarChar(150)
+  slug            String            @unique @db.VarChar(80)
+  currency        String?           @default("USD") @db.VarChar(3)
+  logo_url        String?
+  settings        Json?             @default("{}")
+  created_at      DateTime?         @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime?         @default(now()) @db.Timestamptz(6)
+  audit_logs      audit_logs[]
+  client_feedback client_feedback[]
+  clients         clients[]
+  enquiries       enquiries[]
+  invoices        invoices[]
+  projects        projects[]
+  quotations      quotations[]
+  user_profiles   user_profiles[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model payments {
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  invoice_id     String         @db.Uuid
+  amount         Decimal        @db.Decimal(12, 2)
+  payment_date   DateTime       @default(dbgenerated("CURRENT_DATE")) @db.Date
+  payment_method String?        @default("bank_transfer") @db.VarChar(50)
+  reference_note String?
+  recorded_by    String?        @db.Uuid
+  created_at     DateTime?      @default(now()) @db.Timestamptz(6)
+  invoices       invoices       @relation(fields: [invoice_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user_profiles  user_profiles? @relation(fields: [recorded_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model project_milestones {
+  id                 String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  project_id         String          @db.Uuid
+  title              String          @db.VarChar(150)
+  description        String?
+  due_date           DateTime        @db.Date
+  status             String?         @default("pending") @db.VarChar(30)
+  client_approval_at DateTime?       @db.Timestamptz(6)
+  projects           projects        @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  project_tasks      project_tasks[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model project_tasks {
+  id                 String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  project_id         String              @db.Uuid
+  milestone_id       String?             @db.Uuid
+  assigned_to        String?             @db.Uuid
+  title              String              @db.VarChar(200)
+  description        String?
+  priority           String?             @default("medium") @db.VarChar(20)
+  status             String?             @default("todo") @db.VarChar(30)
+  due_date           DateTime?           @db.Date
+  created_at         DateTime?           @default(now()) @db.Timestamptz(6)
+  user_profiles      user_profiles?      @relation(fields: [assigned_to], references: [id], onUpdate: NoAction)
+  project_milestones project_milestones? @relation(fields: [milestone_id], references: [id], onUpdate: NoAction)
+  projects           projects            @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model projects {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organization_id    String               @db.Uuid
+  client_id          String               @db.Uuid
+  quotation_id       String?              @db.Uuid
+  name               String               @db.VarChar(180)
+  description        String?
+  status             String?              @default("planned") @db.VarChar(30)
+  start_date         DateTime?            @db.Date
+  target_end_date    DateTime?            @db.Date
+  actual_end_date    DateTime?            @db.Date
+  budget             Decimal?             @db.Decimal(12, 2)
+  created_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  client_feedback    client_feedback[]
+  invoices           invoices[]
+  project_milestones project_milestones[]
+  project_tasks      project_tasks[]
+  clients            clients              @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  organizations      organizations        @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  quotations         quotations?          @relation(fields: [quotation_id], references: [id], onUpdate: NoAction)
+
+  @@index([client_id], map: "idx_projects_client")
+  @@index([organization_id], map: "idx_projects_org")
+}
+
+model quotation_items {
+  id               String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quotation_id     String     @db.Uuid
+  item_description String
+  quantity         Decimal    @default(1.00) @db.Decimal(8, 2)
+  unit_price       Decimal    @db.Decimal(12, 2)
+  total_price      Decimal    @db.Decimal(12, 2)
+  sort_order       Int?       @default(0)
+  quotations       quotations @relation(fields: [quotation_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model quotations {
+  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organization_id  String            @db.Uuid
+  client_id        String            @db.Uuid
+  enquiry_id       String?           @db.Uuid
+  quotation_number String            @db.VarChar(50)
+  title            String            @db.VarChar(200)
+  subtotal         Decimal           @default(0.00) @db.Decimal(12, 2)
+  discount_percent Decimal?          @default(0.00) @db.Decimal(5, 2)
+  tax_percent      Decimal?          @default(0.00) @db.Decimal(5, 2)
+  total_amount     Decimal           @default(0.00) @db.Decimal(12, 2)
+  status           String?           @default("draft") @db.VarChar(30)
+  valid_until      DateTime          @db.Date
+  terms_conditions String?
+  created_at       DateTime?         @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?         @default(now()) @db.Timestamptz(6)
+  projects         projects[]
+  quotation_items  quotation_items[]
+  clients          clients           @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  enquiries        enquiries?        @relation(fields: [enquiry_id], references: [id], onUpdate: NoAction)
+  organizations    organizations     @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([client_id], map: "idx_quotes_client")
+  @@index([organization_id], map: "idx_quotes_org")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model user_profiles {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  supabase_uid    String?         @unique @db.VarChar(120)
+  organization_id String?         @db.Uuid
+  first_name      String          @db.VarChar(80)
+  last_name       String          @db.VarChar(80)
+  email           String          @unique @db.VarChar(255)
+  password_hash   String?         @db.VarChar(255)
+  role            String          @db.VarChar(30)
+  avatar_url      String?
+  phone           String?         @db.VarChar(30)
+  is_active       Boolean?        @default(true)
+  last_login_at   DateTime?       @db.Timestamptz(6)
+  created_at      DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime?       @default(now()) @db.Timestamptz(6)
+  audit_logs      audit_logs[]
+  clients         clients[]
+  enquiries       enquiries[]
+  payments        payments[]
+  project_tasks   project_tasks[]
+  organizations   organizations?  @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([organization_id], map: "idx_users_org")
+  @@index([role], map: "idx_users_role")
+}
