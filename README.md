@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ClientPulse Backend — Node.js + Express + TypeScript API
 
 The backend API engine for **ClientPulse**, providing authentication, multi-tenant RBAC, quotation workflows, live client pulse health calculations, and privacy-first local Ollama AI integration.
@@ -56,3 +57,6 @@ git branch -M main
 git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/clientpulse-backend.git
 git push -u origin main
 ```
+=======
+# clientpulse-backend
+>>>>>>> cb17c413740f998dd632cbfed1b2f4f0409afa0c
